@@ -1,0 +1,132 @@
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+
+import { Processos } from '../processos';
+
+import { ProcessosService } from "../processos.service";
+
+import {MatListModule} from '@angular/material/list';
+import { MatListOption } from '@angular/material/list';
+
+import * as fileSaver from 'file-saver';
+import jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+(pdfMake as any).vfs = pdfFonts.pdfMake.vfs;
+import htmlToPdfmake from 'html-to-pdfmake';
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+  @ViewChild('pdfTable') pdfTable!: ElementRef;
+  @ViewChild('content',{static:false}) el!:ElementRef;
+  processo: Processos = new Processos();
+  submitted = false;
+  pdfSrc!: string | "";
+  public arquivo!: string[];
+  public pdfs!: string[];
+  
+  constructor(private processosService: ProcessosService) { 
+
+
+  }
+
+  getProcessoPDF() {
+   
+    this.pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso="+this.processo.numero+"&nomeArquivo="+this.arquivo+"&pagina="+this.processo.pagina;
+  
+  }
+
+  getArquivosPDF(){
+    this.processosService.getListaDeArquivos(this.processo.numero).subscribe(data => {
+      this.pdfs = data;  // acessa a propriedade Search
+
+   }) 
+  }
+
+  ngOnInit(): void {
+  }
+
+  
+
+  onGroupsChange(options: MatListOption[]) {
+    // map these MatListOptions to their values
+    console.log(options.map(o => o.value as string));
+    this.arquivo=options.map(o => o.value as string);
+  }
+
+  download() {
+    //const blob = this.pdfSrc;
+    const blob = new Blob([this.pdfSrc],{type:'applicaton/pdf'})
+    fileSaver.saveAs(this.pdfSrc,"download.pdf");
+    //saveAs(blob, 'test1.pdf');
+   
+  }
+
+ 
+
+exportAsPDF(div_id: string)
+  {
+     let data = document.getElementById(div_id) as HTMLCanvasElement;  
+     html2canvas(data).then(canvas => {
+      var imgWidth=15;
+      var pageHeight=30;
+      var imgHeight=canvas.height * imgWidth/canvas.width;
+      var heightLeft=imgHeight;
+      const contentDataURL = canvas.toDataURL('image/jpeg', 1.0)  
+      let pdf = new jspdf('p', 'mm', 'a4'); //Generates PDF in landscape mode
+      var position=0;
+    // pdf.addImage(contentDataURL,'PNG',0,position,imgWidth,imgHeight);
+     pdf.addImage(contentDataURL, 'JPEG', 1, 1, 170, 170);    
+      pdf.save('Filename.pdf');   
+    }); 
+  }
+
+  exportAsPDFBootStrap(div_id: string)
+  {
+     let data = document.getElementById(div_id) as HTMLCanvasElement;  
+     html2canvas(data).then(canvas => {
+      var imgWidth=15;
+      var pageHeight=30;
+      var imgHeight=canvas.height * imgWidth/canvas.width;
+      var heightLeft=imgHeight;
+      const contentDataURL = canvas.toDataURL('image/jpeg', 1.0)  
+      let pdf = new jspdf('p', 'mm', 'a4'); //Generates PDF in landscape mode
+      var position=0;
+    // pdf.addImage(contentDataURL,'PNG',0,position,imgWidth,imgHeight);
+     pdf.addImage(contentDataURL, 'JPEG', 1, 1, 150, 150);    
+      pdf.save('Filename.pdf');   
+    }); 
+  }
+
+
+  onSubmit() {
+    this.submitted = true;
+    this.getProcessoPDF();
+    this.getArquivosPDF();
+  }
+
+  public downloadAsPDF() {
+    const doc = new jspdf();
+    
+    const pdfTable = this.pdfTable.nativeElement;
+    
+    var html = htmlToPdfmake(pdfTable.innerHTML);
+      
+    const documentDefinition = { content: html };
+    pdfMake.createPdf(documentDefinition).open(); 
+      
+  }
+
+  printPDF(){
+    let pdf =new jspdf('p','pt','a4');
+    pdf.html(this.el.nativeElement, {
+    callback:(pdf)=>{
+      pdf.save("teste.pdf")
+    }
+  })
+  }
+
+}

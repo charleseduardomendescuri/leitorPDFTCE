@@ -1,0 +1,6 @@
+{
+	"appId": "com.example.app",
+	"appName": "leitorPDFTCE",
+	"webDir": "dist/leitorPDFTCE",
+	"bundledWebRuntime": false
+}

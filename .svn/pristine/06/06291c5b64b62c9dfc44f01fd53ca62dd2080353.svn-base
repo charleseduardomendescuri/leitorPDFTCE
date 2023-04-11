@@ -1,0 +1,56 @@
+import { Component, OnInit } from '@angular/core';
+
+import { Processos } from '../processos';
+
+import { ProcessosService } from "../processos.service";
+
+import {MatListModule} from '@angular/material/list';
+import { MatListOption } from '@angular/material/list'
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  processo: Processos = new Processos();
+  submitted = false;
+  pdfSrc!: string | "";
+  public arquivo!: string[];
+  public pdfs!: string[];
+  //typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
+  constructor(private processosService: ProcessosService) { 
+
+
+  }
+
+  getProcessoPDF() {
+    //this.pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso="+this.processo.numero+"&nomeArquivo="+this.processo.pdf+"&pagina="+this.processo.pagina;
+    this.pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso="+this.processo.numero+"&nomeArquivo="+this.arquivo+"&pagina="+this.processo.pagina;
+  
+  }
+
+  getArquivosPDF(){
+    this.processosService.getListaDeArquivos(this.processo.numero).subscribe(data => {
+      this.pdfs = data;  // acessa a propriedade Search
+
+   }) 
+  }
+
+  ngOnInit(): void {
+  }
+
+  onGroupsChange(options: MatListOption[]) {
+    // map these MatListOptions to their values
+    console.log(options.map(o => o.value as string));
+    this.arquivo=options.map(o => o.value as string);
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.getProcessoPDF();
+    this.getArquivosPDF();
+  }
+
+}

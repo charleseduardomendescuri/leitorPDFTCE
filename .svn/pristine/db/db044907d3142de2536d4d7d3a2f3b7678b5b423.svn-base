@@ -1,0 +1,31 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+
+@Injectable({
+  providedIn: 'root', 
+})
+export class ProcessosService {
+
+
+  private baseUrl = '/processos';
+
+  
+
+  constructor(private http: HttpClient) { }
+
+
+ 
+
+    getProcessosPDF(processo: Object): Observable<Object> {
+    return this.http.get(`${this.baseUrl}`, processo);
+  }
+
+  
+}
+
+/*
+Classe TypeScript responsável pela chamada ao microsserviço Spring Boot que lista os pdf de processos
+autor Charles Curi
+*/

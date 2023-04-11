@@ -1,0 +1,48 @@
+import { Component, OnInit } from '@angular/core';
+
+import { Processos } from '../processos';
+
+import { ProcessosService } from "../processos.service";
+
+//import {MatListModule} from '@angular/material/list';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit {
+
+  processo: Processos = new Processos();
+  submitted = false;
+  pdfSrc!: string | "";
+  
+ //pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso=917989139&nomeArquivo=arquivo57339.pdf&pagina=29";
+ // pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso="+this.processo.numero+"&nomeArquivo="+this.processo.pdf+"&pagina="+this.processo.pagina;
+ //pdfSrc:string;
+  constructor(private processosService: ProcessosService) { 
+
+
+  }
+
+ 
+
+  getProcessoPDF() {
+    this.pdfSrc ="http://localhost:4200/buscarPaginaDoPdf?numeroProcesso="+this.processo.numero+"&nomeArquivo="+this.processo.pdf+"&pagina="+this.processo.pagina;
+  
+  //  this.processosService.getProcessoPDF(this.processo.numero,this.processo.pdf,this.processo.pagina)
+   //   .subscribe(data => console.log(data), error => console.log(error));
+   // this.processo = new Processos();
+  }
+
+  
+
+  ngOnInit(): void {
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.getProcessoPDF();
+  }
+
+}

@@ -1,0 +1,90 @@
+<h3>Buscar pdf processo</h3>
+<div  style="width: 400px;">
+
+  <form  #pdfForm="ngForm" appIdentityRevealed (ngSubmit)="onSubmit()">
+    <div class="cross-validation" [class.cross-validation-error]="pdfForm.errors?.['identityRevealed']"> 
+    <div class="form-group">
+      <label for="numero">Número</label>
+      <input type="text" class="form-control" id="numero" name="numero" required minlength="9" [(ngModel)]="processo.numero" #numero="ngModel" >
+
+      <div *ngIf="numero.errors?.['required']">
+        Número é obrigatório.
+      </div>
+      <div *ngIf="numero.errors?.['minlength']">
+        Número deve ter 9 caracteres.
+      </div>
+      <button type="submit" class="btn btn-success">Buscar arquivos</button>
+      
+  </div>
+</div>
+
+<table id="componente">
+	<tr>
+	<td>
+  <div class="form-group">
+    <label for="name">Pdf</label>
+    <mat-selection-list #pdfList [multiple]="false" (selectionChange)="onGroupsChange(pdfList.selectedOptions.selected)">
+      <mat-list-option *ngFor="let pdf of pdfs" [value]="pdf">
+        {{pdf}}
+      </mat-list-option>
+    </mat-selection-list>
+    
+    <p>
+      Option selected: {{pdfList.selectedOptions.selected[0]?.value}}
+    </p>
+     
+	</div>
+	</td>
+
+	<td>
+		<div class="form-group">
+		  <label for="name">Html</label>
+		  <mat-selection-list #htmlList [multiple]="false" (selectionChange)="onGroupsChangeHtml(htmlList.selectedOptions.selected)">
+			<mat-list-option *ngFor="let html of htmls" [value]="html">
+			  {{html}}
+			</mat-list-option>
+		  </mat-selection-list>
+		  
+		  <p>
+			Option selected: {{htmlList.selectedOptions.selected[0]?.value}}
+		  </p>
+		   
+		  </div>
+		  </td>
+	</tr>
+	</table>
+ 
+  <div class="form-group">
+      <label for="name">Página</label>
+      <input type="text" class="form-control" id="pagina" required [(ngModel)]="processo.pagina" name="pagina">
+  </div>
+
+  <button type="submit" [disabled]="pdfForm.invalid" class="btn btn-success">Buscar processo</button>
+  <button type="submit" [disabled]="pdfForm.invalid" (click)="buscarArquivoHtml()">Buscar Html</button>
+  <button type="submit" [disabled]="pdfForm.invalid" (click)="download()">Download PDF</button>
+  </form>
+  <div class="container">
+    <div id="pdfTable" #pdfTable  class="main-container">
+      <div [innerHTML]="htmlString"></div>
+    </div>
+
+    <button  printSectionId="pdfTable" ngxPrint >Print</button>
+    <button type="submit"  (click)="exportAsPDF('pdfTable');">HTML em PDF</button>
+  </div> 
+  
+
+  <pdf-viewer [src]="pdfSrc" 
+  [render-text]="true"
+  style="display: block;"
+></pdf-viewer>
+
+</div>
+
+
+
+
+
+
+  
+   
+

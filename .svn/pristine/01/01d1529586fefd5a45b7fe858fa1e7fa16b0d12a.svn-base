@@ -1,0 +1,128 @@
+<h3>Buscar pdf processo</h3>
+<div  style="width: 400px;">
+
+  <form  #pdfForm="ngForm" appIdentityRevealed (ngSubmit)="onSubmit()">
+    <div class="cross-validation" [class.cross-validation-error]="pdfForm.errors?.['identityRevealed']"> 
+    <div class="form-group">
+      <label for="numero">Número</label>
+      <input type="text" class="form-control" id="numero" name="numero" required minlength="9" [(ngModel)]="processo.numero" #numero="ngModel" >
+
+      <div *ngIf="numero.errors?.['required']">
+        Número é obrigatório.
+      </div>
+      <div *ngIf="numero.errors?.['minlength']">
+        Número deve ter 9 caracteres.
+      </div>
+      <button type="submit" class="btn btn-success">Buscar arquivos</button>
+      
+  </div>
+</div>
+
+  
+  <div class="form-group">
+    <label for="name">Pdf</label>
+    <mat-selection-list #pdfList [multiple]="false" (selectionChange)="onGroupsChange(pdfList.selectedOptions.selected)">
+      <mat-list-option *ngFor="let pdf of pdfs" [value]="pdf">
+        {{pdf}}
+      </mat-list-option>
+    </mat-selection-list>
+    
+    <p>
+      Option selected: {{pdfList.selectedOptions.selected[0]?.value}}
+    </p>
+     
+</div>
+  
+ 
+  <div class="form-group">
+      <label for="name">Página</label>
+      <input type="text" class="form-control" id="pagina" required [(ngModel)]="processo.pagina" name="pagina">
+  </div>
+
+  <button type="submit" [disabled]="pdfForm.invalid" class="btn btn-success">Buscar processo</button>
+  <button type="submit" [disabled]="pdfForm.invalid" (click)="download()">Download PDF</button>
+  </form>
+  <div class="container">
+  <div id="pdfTable" #pdfTable  class="main-container">
+   
+    <table id="pia_processo">
+      <tbody>
+
+        <tr>
+          <td><img src="../assets/logo.png"></td>
+          
+        </tr>
+        
+        <tr>
+          <th>PROCESSO:</th>
+          <td>00024423.989.21-9</td>
+        </tr>
+        <tr>
+          <th>REPRESENTANTE:</th>
+          <td>
+          <ul>
+            <li>PAMELA ALESSANDRA BATONI BASTIDAS VELOSO (CPF 369.212.928-94)
+            <ul>
+              <li><span class="label_adv">ADVOGADO:</span> PAMELA ALESSANDRA BATONI BASTIDAS VELOSO (OAB/SP 322.529)</li>
+            </ul>
+            </li>
+          </ul>
+          </td>
+        </tr>
+        <tr>
+          <th>REPRESENTADO(A):</th>
+          <td>
+          <ul>
+            <li>PREFEITURA MUNICIPAL DE ITAPEVI (CNPJ 46.523.031/0001-28)</li>
+          </ul>
+          </td>
+        </tr>
+        <tr>
+          <th>ASSUNTO:</th>
+          <td>Representação visando o 
+    exame prévio do edital da Concorrência Pública nº 01/2021, Processo 
+    SUPRI n 164/2021, da Prefeitura Municipal de Itapevi, objetivando a 
+    outorga de concessão onerosa do lote único de serviço de transporte 
+    coletivo de passageiros no Município de Itapevi.</td>
+        </tr>
+        <tr>
+          <th>EXERCÍCIO:</th>
+          <td>2022</td>
+        </tr>
+        <tr>
+          <th>INSTRUÇÃO POR:</th>
+          <td>DF-05</td>
+        </tr>
+        <tr>
+          <th>PROCESSO(S) DEPENDENTES(S):</th>
+          <td>00024609.989.21-5</td>
+        </tr>
+      </tbody>
+    </table>
+   
+        
+        
+         
+      
+  
+    
+  </div>
+  <button type="submit"  (click)="exportAsPDF('pdfTable');">HTML em PDF</button>
+</div> 
+  
+
+  <pdf-viewer [src]="pdfSrc" 
+  [render-text]="true"
+  style="display: block;"
+></pdf-viewer>
+
+</div>
+
+
+
+
+
+
+  
+   
+
